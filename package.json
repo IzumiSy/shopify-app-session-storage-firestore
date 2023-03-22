@@ -9,7 +9,8 @@
   "author": "IzumiSy",
   "license": "MIT",
   "devDependencies": {
-    "@shopify/shopify-app-session-storage": "^1.1.1"
+    "@shopify/shopify-app-session-storage": "^1.1.1",
+    "prettier": "^2.8.6"
   },
   "dependencies": {
     "@shopify/shopify-api": "^6.2.0"
