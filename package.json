@@ -5,7 +5,8 @@
   "main": "./build/firestore.js",
   "scripts": {
     "build": "tsc",
-    "test": "firebase emulators:exec 'npx ava --verbose' --only firestore --project firestore-integration-test"
+    "test": "FIRESTORE_EMULATOR_HOST='localhost:8080' && npm run build && firebase emulators:exec 'npx ava --verbose' --only firestore --project firestore-integration-test",
+    "clean": "rm -rf build"
   },
   "author": "IzumiSy",
   "license": "MIT",
