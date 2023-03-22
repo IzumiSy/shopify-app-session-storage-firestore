@@ -1,11 +1,12 @@
 {
   "name": "shopify-app-session-storage-firestore",
   "version": "1.0.0",
+  "type": "module",
   "description": "Firestore storage adapter for Shopify App session",
   "main": "./build/firestore.js",
   "scripts": {
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "firebase emulators:exec 'npx ava --verbose' --only firestore --project firestore-integration-test"
   },
   "author": "IzumiSy",
   "license": "MIT",
