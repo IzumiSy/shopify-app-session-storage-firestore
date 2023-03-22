@@ -12,9 +12,12 @@
   "license": "MIT",
   "devDependencies": {
     "@shopify/shopify-app-session-storage": "^1.1.1",
+    "@shopify/shopify-app-session-storage-test-utils": "https://gitpkg.now.sh/Shopify/shopify-app-js/packages/shopify-app-session-storage-test-utils?main",
     "@tsconfig/node18": "^1.0.1",
     "ava": "^5.2.0",
     "firebase-tools": "^11.25.1",
+    "install": "^0.13.0",
+    "npm": "^9.6.2",
     "prettier": "^2.8.6",
     "typescript": "^5.0.2"
   },
