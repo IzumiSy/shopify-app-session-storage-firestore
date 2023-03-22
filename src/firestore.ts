@@ -1,33 +1,38 @@
-import { Session, SessionParams } from "@shopify/shopify-api";
+import { Session } from "@shopify/shopify-api";
 import { SessionStorage } from "@shopify/shopify-app-session-storage";
 import { FirebaseOptions, initializeApp } from "firebase/app";
 import {
   DocumentData,
-  FieldValue,
   Firestore,
   FirestoreDataConverter,
   QueryDocumentSnapshot,
   SnapshotOptions,
   WithFieldValue,
+  collection,
+  deleteDoc,
   doc,
   getDoc,
+  getDocs,
   getFirestore,
+  query,
   setDoc,
+  where,
+  writeBatch,
 } from "firebase/firestore";
 
-type SerializedSession = ReturnType<
-  InstanceType<typeof Session>["toPropertyArray"]
->;
 type SessionDocument = {
   shopID: string;
-  value: SerializedSession;
+  value: ReturnType<InstanceType<typeof Session>["toPropertyArray"]>;
 };
 
 export class FirestoreSessionStorage implements SessionStorage {
   private firestore: Firestore;
   private converter: FirestoreDataConverter<SessionDocument>;
 
-  constructor(firebaseConfiguration: FirebaseOptions) {
+  constructor(
+    firebaseConfiguration: FirebaseOptions,
+    private tableName: string = "__sessions"
+  ) {
     const app = initializeApp(firebaseConfiguration);
     this.firestore = getFirestore(app);
     this.converter = {
@@ -45,19 +50,23 @@ export class FirestoreSessionStorage implements SessionStorage {
   }
 
   async storeSession(session: Session): Promise<boolean> {
-    await setDoc(
-      doc(this.firestore, "__sessions").withConverter(this.converter),
-      {
-        shopID: session.shop,
-        value: session.toPropertyArray(),
-      }
-    );
-    return true;
+    try {
+      await setDoc(
+        doc(this.firestore, this.tableName).withConverter(this.converter),
+        {
+          shopID: session.shop,
+          value: session.toPropertyArray(),
+        }
+      );
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   async loadSession(id: string): Promise<Session | undefined> {
     const snapshot = await getDoc<SessionDocument>(
-      doc(this.firestore, "__sessions", id).withConverter(this.converter)
+      doc(this.firestore, this.tableName, id).withConverter(this.converter)
     );
     if (snapshot.exists()) {
       const data = snapshot.data();
@@ -65,15 +74,38 @@ export class FirestoreSessionStorage implements SessionStorage {
     }
   }
 
-  deleteSession(id: string): Promise<boolean> {
-    throw new Error("Method not implemented.");
+  async deleteSession(id: string): Promise<boolean> {
+    try {
+      await deleteDoc(doc(this.firestore, this.tableName, id));
+      return true;
+    } catch {
+      return false;
+    }
   }
 
-  deleteSessions(ids: string[]): Promise<boolean> {
-    throw new Error("Method not implemented.");
+  async deleteSessions(ids: string[]): Promise<boolean> {
+    try {
+      const batch = writeBatch(this.firestore);
+      ids.forEach((id) => {
+        batch.delete(doc(this.firestore, this.tableName, id));
+      });
+      await batch.commit();
+      return true;
+    } catch {
+      return false;
+    }
   }
 
-  findSessionsByShop(shop: string): Promise<Session[]> {
-    throw new Error("Method not implemented.");
+  async findSessionsByShop(shop: string): Promise<Session[]> {
+    const sessionsRef = collection(
+      this.firestore,
+      this.tableName
+    ).withConverter(this.converter);
+    const q = query(sessionsRef, where("shopID", "==", shop));
+    const snapshots = await getDocs(q);
+    return snapshots.docs.map((snapshot) => {
+      const data = snapshot.data();
+      return Session.fromPropertyArray(data.value);
+    });
   }
 }
