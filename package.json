@@ -16,6 +16,7 @@
     "typescript": "^5.0.2"
   },
   "dependencies": {
-    "@shopify/shopify-api": "^6.2.0"
+    "@shopify/shopify-api": "^6.2.0",
+    "firebase": "^9.17.1"
   }
 }
