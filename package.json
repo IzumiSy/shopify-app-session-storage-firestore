@@ -1,7 +1,6 @@
 {
   "name": "shopify-app-session-storage-firestore",
   "version": "1.0.0",
-  "type": "module",
   "description": "Firestore storage adapter for Shopify App session",
   "main": "./build/firestore.js",
   "scripts": {
