@@ -45,13 +45,13 @@ test.before(async (t) => {
   storage.useEmulator();
 
   shops.forEach(async (session) => {
-    t.is(await storage.storeSession(session), true);
+    t.true(await storage.storeSession(session));
   });
 
   t.context = { storage };
 });
 
-test.serial("query", async (t) => {
+test.serial("sessions should be queried by shop", async (t) => {
   const sessions = await t.context.storage.findSessionsByShop("shop1");
   t.is(sessions.length, 2);
   const sessionIDs = sessions.map((session) => session.id);
