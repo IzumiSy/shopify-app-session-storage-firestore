@@ -29,7 +29,8 @@
     "firebase-tools": "^11.25.1",
     "minify": "^9.2.0",
     "prettier": "^2.8.6",
-    "typescript": "^5.0.2"
+    "typescript": "^5.0.2",
+    "versionup": "^3.0.4"
   },
   "dependencies": {
     "@shopify/shopify-api": "^6.2.0",
