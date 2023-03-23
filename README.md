@@ -11,7 +11,7 @@ $ npm run build
 
 ## Testing
 
-```
+```bash
 $ npm run emulator
 $ npm test
 ```
