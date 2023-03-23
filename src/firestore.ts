@@ -1,4 +1,4 @@
-import { Session } from "@shopify/shopify-api";
+import { Session, SessionParams } from "@shopify/shopify-api";
 import { SessionStorage } from "@shopify/shopify-app-session-storage";
 import { FirebaseOptions, initializeApp } from "firebase/app";
 import {
@@ -9,6 +9,7 @@ import {
   SnapshotOptions,
   WithFieldValue,
   collection,
+  connectFirestoreEmulator,
   deleteDoc,
   doc,
   getDoc,
@@ -22,7 +23,7 @@ import {
 
 type SessionDocument = {
   shopID: string;
-  value: ReturnType<InstanceType<typeof Session>["toPropertyArray"]>;
+  value: SessionParams;
 };
 
 export class FirestoreSessionStorage implements SessionStorage {
@@ -52,10 +53,12 @@ export class FirestoreSessionStorage implements SessionStorage {
   async storeSession(session: Session): Promise<boolean> {
     try {
       await setDoc(
-        doc(this.firestore, this.tableName).withConverter(this.converter),
+        doc(this.firestore, this.tableName, session.id).withConverter(
+          this.converter
+        ),
         {
           shopID: session.shop,
-          value: session.toPropertyArray(),
+          value: session.toObject(),
         }
       );
       return true;
@@ -70,7 +73,7 @@ export class FirestoreSessionStorage implements SessionStorage {
     );
     if (snapshot.exists()) {
       const data = snapshot.data();
-      return Session.fromPropertyArray(data.value);
+      return new Session(data.value);
     }
   }
 
@@ -105,7 +108,7 @@ export class FirestoreSessionStorage implements SessionStorage {
     const snapshots = await getDocs(q);
     return snapshots.docs.map((snapshot) => {
       const data = snapshot.data();
-      return Session.fromPropertyArray(data.value);
+      return new Session(data.value);
     });
   }
 
