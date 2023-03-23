@@ -4,7 +4,7 @@
   "description": "Firestore adapter for Shopify App session storage",
   "main": "./build/firestore.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && minify ./build/firestore.js > ./build/firestore.min.js",
     "test": "npm run build && ava",
     "emulator": "npx firebase emulators:start --only firestore --project shopify-session-app",
     "clean": "rm -rf build"
