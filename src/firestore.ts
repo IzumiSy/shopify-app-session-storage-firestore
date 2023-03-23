@@ -108,4 +108,8 @@ export class FirestoreSessionStorage implements SessionStorage {
       return Session.fromPropertyArray(data.value);
     });
   }
+
+  useEmulator() {
+    connectFirestoreEmulator(this.firestore, "localhost", 8080);
+  }
 }
