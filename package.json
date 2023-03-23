@@ -5,7 +5,8 @@
   "main": "./build/firestore.js",
   "scripts": {
     "build": "tsc",
-    "test": "npm run build && firebase emulators:exec 'npx ava --verbose' --only firestore --project shopify-session-app",
+    "test": "npm run build && ava",
+    "emulator": "npx firebase emulators:start --only firestore --project shopify-session-app",
     "clean": "rm -rf build"
   },
   "author": "IzumiSy",
@@ -21,5 +22,9 @@
   "dependencies": {
     "@shopify/shopify-api": "^6.2.0",
     "firebase": "^9.17.1"
+  },
+  "ava": {
+    "files": ["tests/**/*"],
+    "concurrency": 1
   }
 }
