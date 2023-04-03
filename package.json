@@ -32,9 +32,11 @@
     "typescript": "^5.0.2",
     "versionup": "^3.0.4"
   },
+  "peerDependencies": {
+    "firebase": "^9.19"
+  },
   "dependencies": {
-    "@shopify/shopify-api": "^6.2.0",
-    "firebase": "^9.17.1"
+    "@shopify/shopify-api": "^6.2.0"
   },
   "ava": {
     "files": ["tests/**/*"],
